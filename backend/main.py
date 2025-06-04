@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware  # Add this import
 app = FastAPI()
 
 origins = [
+    "https://blog-app-fe-be.onrender.com",
     "http://localhost:5173",  # Vite default
     "http://127.0.0.1:5173",
     "http://localhost:3000"   # Create-React-App default
