@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchMessage } from "../services/api";
+import { fetchMessage } from "../services/api"; // Use your API service
 
 const HomePage = () => {
   const [message, setMessage] = useState("");
@@ -7,10 +7,6 @@ const HomePage = () => {
 
   useEffect(() => {
     fetchMessage()
-      .then((response) => {
-        if (!response.ok) throw new Error("Network response was not ok");
-        return response.json();
-      })
       .then((data) => setMessage(data.message))
       .catch((err) => {
         console.error("Fetch error:", err);
