@@ -11,5 +11,3 @@ services:
         VITE_API_URL: http://host.docker.internal:8000
     ports:
       - "80:80"
-    # extra_hosts:
-    #   - "host.docker.internal:host-gateway"
