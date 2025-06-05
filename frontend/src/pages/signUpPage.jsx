@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { signupUser } from "../services/api";
 import { useNavigate } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
     username: "",
@@ -25,18 +25,9 @@ const SignUpPage = () => {
     setError("");
 
     try {
-      const response = await axios.post(
-        "http://localhost:8000/signup",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
+      const response = await signupUser(formData);
       console.log("Signup successful:", response.data);
-      navigate("/login"); // Redirect to login after successful signup
+      navigate("/login");
     } catch (err) {
       setError(
         err.response?.data?.detail || "Signup failed. Please try again."
@@ -48,58 +39,70 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center text-center">
-      <h1 className="m-4 p-2 bg-blue-500 rounded-2xl">Sign Up</h1>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-      <form
-        onSubmit={handleSubmit}
-        className="bg-lime-600 p-4 text-left rounded-4xl"
-      >
-        <div className="p-2 bg-amber-400">
-          <label htmlFor="username">Username:</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-            className="ml-2 p-1"
-          />
-        </div>
-        <div className="p-2 bg-amber-400">
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            className="ml-2 p-1"
-          />
-        </div>
-        <div className="p-2 bg-blue-400">
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            minLength="6"
-            className="ml-2 p-1"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="bg-amber-500 p-2 rounded-2xl border-2 border-black hover:bg-amber-200 self-center mt-4 disabled:opacity-50"
+    <div class="flex justify-center items-center w-screen h-screen bg-linear-to-r from-[#008FE7] to-[#005589]">
+      <div class="flex flex-col justify-center items-center bg-white rounded-3xl max-w-80 w-[100%] min-h-[75%] ">
+        <h1 class="text-center text-5xl text-blue-400 w-full h-20 self-center p-3">
+          Sign Up
+        </h1>
+        {error && <p className="text-red-500 mb-4">{error}</p>}
+        <form
+          onSubmit={handleSubmit}
+          class=" flex flex-col justify-center p-4 m-6 w-fit"
         >
-          {isLoading ? "Creating account..." : "Sign Up"}
-        </button>
-      </form>
+          <div class="pb-2 ">
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
+              placeholder="Username"
+              onChange={handleChange}
+              required
+              class="w-full bg-white p-3 rounded-[8px] border-gray-500 border-2"
+            />
+          </div>
+          <div className="pb-2">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              placeholder="Email"
+              class="w-full bg-white p-3 rounded-[8px] border-gray-500 border-2"
+            />
+          </div>
+          <div className="pb-2">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              minLength="6"
+              placeholder="Password"
+              class="w-full bg-white p-3 rounded-[8px] border-gray-500 border-2"
+            />
+          </div>
+          <div class=" flex flex-col justify-between items-center w-full ">
+            <button
+              type="submit"
+              disabled={isLoading}
+              class="text-white font-bold text-lg bg-[#008FE7] rounded-full p-2 self-center w-full"
+            >
+              {isLoading ? "Creating account..." : "Sign Up"}
+            </button>
+          </div>
+          <p className="mt-4 text-center">
+            Already have an account?
+            <Link to="/login" className="text-blue-500 underline">
+              Blog(in)
+            </Link>
+          </p>
+        </form>
+      </div>
     </div>
   );
 };
