@@ -27,7 +27,15 @@ class UserCreate(BaseModel):
     password: str
 
 
-
 @app.get("/")
 def read_root():
     return {"message": "Hello shmoe mama 123"}
+
+@app.post("/signup")
+def signup(user:UserCreate):
+    if user.username == "existing_user":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username already exists"
+        )
+    return {"message": "User created successfully", "user": user}

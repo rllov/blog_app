@@ -16,3 +16,5 @@ export const fetchMessage = async () => {
     throw error;
   }
 };
+
+export const signupUser = (formData) => api.post("/signup", formData);
