@@ -4,12 +4,20 @@ services:
     build: ./backend
     ports:
       - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+psycopg2://user:password@database:5432/mydatabase
   frontend:
     build:
       context: ./frontend
       args:
-        VITE_API_URL: http://host.docker.internal:8000
+        VITE_API_URL: http://localhost:8000
     ports:
       - "80:80"
-    # extra_hosts:
-    #   - "host.docker.internal:host-gateway"
+  database:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
