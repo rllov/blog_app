@@ -4,7 +4,7 @@
 
 3. git commit -m "message" to add the commit (to add this new change)
 
-4. git commit --amend (changes the last commit)
+4. git commit --amend --no-edit (changes the last commit)
 
 "Feature homepage"
 initial commit - "feature homepage"

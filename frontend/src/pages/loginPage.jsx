@@ -18,8 +18,10 @@ const LoginPage = () => {
         username_or_email: usernameOrEmail,
         password,
       });
+      //saving token
+      localStorage.setItem("access_token", response.data.access_token);
       console.log("Login successful:", response.data);
-      navigate("/home"); // Redirect to the success page
+      navigate("/auth/home"); // Redirect to the success page
     } catch (error) {
       console.error("Login failed:", error);
       alert("Login failed. Please check your credentials.");
