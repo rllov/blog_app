@@ -10,6 +10,9 @@ export default function Header() {
         <Link to="/auth/posts" style={{ marginRight: 20 }}>
           Posts
         </Link>
+        <Link to="/auth/features" style={{ marginRight: 20 }}>
+          Future Features
+        </Link>
       </nav>
 
       {/* Critical: This renders the child routes */}

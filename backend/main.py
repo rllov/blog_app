@@ -1,10 +1,13 @@
-from fastapi import FastAPI, HTTPException, status, Depends, APIRouter
+import uuid
+from fastapi import FastAPI, HTTPException, status, Depends, APIRouter, Form, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from auth import decode_access_token, create_access_token
-from model import UserModel, SignUpRequest, LoginRequest
+from model import UserModel, SignUpRequest, LoginRequest, PostModel
+import os
 import bcrypt
 
 
@@ -128,6 +131,59 @@ def read_users_me(current_user: UserModel = Depends(get_current_user)):
         "email": current_user.email
     }
 
+UPLOAD_DIR = "static/images"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+@auth_router.post("/posts")
+def create_post(
+    text:str = Form(...),
+    image: UploadFile = File(None),
+    db: Session = Depends(get_db),
+    current_user: UserModel = Depends(get_current_user)
+):
+    image_filename = None
+    if image:
+        image_filename = f"{uuid.uuid4()}_{image.filename}"
+        with open(os.path.join(UPLOAD_DIR, image_filename), "wb") as buffer:
+            buffer.write(image.file.read())
+    post = PostModel(
+        user_id=current_user.user_id,
+        username=current_user.username,
+        text=text,
+        image_filename=image_filename,
+    )
+    db.add(post)
+    db.commit()
+    db.refresh(post)
+    return {
+        "message": "Post created successfully",
+        "post": {
+            "post_id": str(post.post_id),
+            "username": post.username,
+            "text": post.text,
+            "image_filename": post.image_filename,
+            "created_at": post.created_at.isoformat() if post.created_at else None,
+        }
+    }
+
+
+@auth_router.get("/posts")
+def get_posts(
+    db: Session = Depends(get_db),
+    current_user: UserModel = Depends(get_current_user)
+):
+    posts = db.query(PostModel).order_by(PostModel.created_at.desc()).all()
+    return [
+        {
+            "post_id": str(post.post_id),
+            "user_id": str(post.user_id),
+            "username": post.username,
+            "text": post.text,
+            "image_filename": post.image_filename,
+            "created_at": post.created_at.isoformat() if post.created_at else None,
+            "updated_at": post.updated_at.isoformat() if post.updated_at else None,
+        }
+        for post in posts
+    ]
 # @auth_router.get("/posts")
 # def read_posts(current_user: UserModel = Depends(get_current_user)):
 #     return {
@@ -136,4 +192,5 @@ def read_users_me(current_user: UserModel = Depends(get_current_user)):
 #         "username": current_user.username,
 #         "email": current_user.email
 #     }
+app.mount("/images", StaticFiles(directory=UPLOAD_DIR), name="images")
 app.include_router(auth_router)
