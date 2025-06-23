@@ -3,6 +3,7 @@ import LoginPage from "./pages/loginPage";
 import SignUpPage from "./pages/signUpPage";
 import HomePage from "./pages/homePage";
 import PostsPage from "./pages/postsPage";
+import FeaturesPage from "./pages/featuresPage";
 import {
   Route,
   createBrowserRouter,
@@ -26,8 +27,9 @@ const router = createBrowserRouter(
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignUpPage />} />
       <Route element={<AppLayout />}>
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/posts" element={<PostsPage />} />
+        <Route path="/auth/home" element={<HomePage />} />
+        <Route path="/auth/posts" element={<PostsPage />} />
+        <Route path="/auth/features" element={<FeaturesPage />} />
       </Route>
     </>
   )
